@@ -1,0 +1,33 @@
+.upload{
+    background-image: initial;
+    font-size: larger;
+}
+.c div{
+    background-color: inherit;
+}
+
+
+.fileContainer  .chooseFileButton{
+    color: #0dcaf0;
+    border-color: #0dcaf0;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    
+}
+
+.fileContainer .chooseFileButton:hover {
+	background: #0dcaf0;
+	color: black;
+}
