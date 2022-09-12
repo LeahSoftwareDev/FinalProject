@@ -5,8 +5,6 @@ I faced several challenges when writing the project, such as identifying the obj
 The system provides the user with a convenient interface for uploading the sheet music image, when running the application scans the page, processes the data, creates an audio segment from the sheet music, the user can listen to the segment online and/or download it to the hard drive.
 
 ## Installations
-## Preparing the application
-
 
 ### Install required libraries
 
@@ -31,10 +29,11 @@ Client side
 - react-redux
 - react-scripts
 - redux
+install node modules run `npm i`
 
 
 ## Usage
-
+To run the user interface run `npm start` at the cmd in the project directory. 
 
 
 
