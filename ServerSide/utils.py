@@ -5,10 +5,9 @@ from Github
 """
 import numpy as np
 
-def get_piano_notes(): # מחזיר את רשימת כל תווי הפסנתר והצלילים שלהם
+def get_piano_notes():
     '''
     Get the frequency in hertz for all keys on a standard piano.
-    קבל את התדר בהרץ עבור כל הקלידים בפסנתר סטנדרטי.
     Returns
     -------
     note_freqs : dict
@@ -18,26 +17,21 @@ def get_piano_notes(): # מחזיר את רשימת כל תווי הפסנתר �
     # White keys are in Uppercase and black keys (sharps) are in lowercase
     octave = ['C', 'c', 'D', 'd', 'E', 'F', 'f', 'G', 'g', 'A', 'a', 'B']
     base_freq = 440  #Frequency of Note A4 תו לה אמצעי
-    keys = np.array([x+str(y) for y in range(0,9) for x in octave]) #מכניס את כל המפתחות של הפסנתר למערך keys
-    # Trim to standard 88 keys  כל מקלדת הפסנתר
+    keys = np.array([x+str(y) for y in range(0,9) for x in octave])
+    # Trim to standard 88 keys
 
     start = np.where(keys == 'A0')[0][0]
     end = np.where(keys == 'C8')[0][0]
     keys = keys[start:end+1]
 
-    # np.append(keys,['p'])
-    # print(keys)
-
-    # מילון של תו וצליל
-    note_freqs = dict(zip(keys, [2**((n+1-49)/12)*base_freq for n in range(len(keys))]))# range(0,88)  #נוסחה להפקת הצליל של של תו
+    note_freqs = dict(zip(keys, [2**((n+1-49)/12)*base_freq for n in range(len(keys))]))# range(0,88)
     note_freqs['p']= 0.1
     note_freqs[''] = 0.0 # stop
     return note_freqs
 
 def get_sine_wave(frequency, duration, sample_rate=44100, amplitude=4096):
     '''
-    Get pure sine wave. 
-    קבל גל סינוס טהור
+    Get pure sine wave.
     Parameters
     ----------
     frequency : float תדר
@@ -61,8 +55,7 @@ def get_sine_wave(frequency, duration, sample_rate=44100, amplitude=4096):
 
 def apply_overtones(frequency, duration, factor, sample_rate=44100, amplitude=4096):
     '''
-    Return fundamental note with overtones applied. 
-    להפוך תו יסוד עם צלילים עיליים.
+    Return fundamental note with overtones applied.
     Parameters
     ----------
     frequency : float
@@ -97,10 +90,8 @@ def apply_overtones(frequency, duration, factor, sample_rate=44100, amplitude=40
 
 def get_adsr_weights(frequency, duration, length, decay, sustain_level, sample_rate=44100):
     '''
-    דינמיקה
     ADSR(attack, decay, sustain, and release) envelop generator with exponential
     weights applied.
-    (תקיפה, דעיכה, שמירה ושחרור) עוטף מחולל עם אקספוננציאלי משקולות מיושמות.
     Parameters
     ----------
     frequency : float
@@ -160,7 +151,6 @@ def get_adsr_weights(frequency, duration, length, decay, sustain_level, sample_r
 def apply_pedal(note_values, bar_value):
     '''
     Press and hold the sustain pedal throughout the bar.
-    לחיצת פדל
     Parameters
     ----------
     note_values : list
@@ -178,7 +168,7 @@ def apply_pedal(note_values, bar_value):
     new_values = []
     start = 0
     while True:
-        cum_value = np.cumsum(np.array(note_values[start:]))#סכום של כל איברי המערך
+        cum_value = np.cumsum(np.array(note_values[start:]))
         end = np.where(cum_value == bar_value)[0][0]
         if end == 0:
             new_values += [note_values[start]]
@@ -192,8 +182,7 @@ def apply_pedal(note_values, bar_value):
 
 def get_song_data(music_notes,note_values, bar_value, factor, length, decay, sustain_level, sample_rate=44100, amplitude=4096):
     '''
-    Generate song from notes. 
-    צור שיר מהתווים.
+    Generate song from notes.
     Parameters
     music_notes : List of note names.
     note_values : List of note duration.

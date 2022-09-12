@@ -1,5 +1,4 @@
 import cv2
-# import tensorflow as tf
 import numpy as np
 from classes import MusicObject
 from operator import attrgetter
@@ -9,7 +8,6 @@ import help
 from playMusic import play_music
 
 
-# הפונקציה מחלקת את כל הדף לשורות - מחזירה מערך של שורות
 def split_to_lines(img, factor):
     '''
     the function gets the whole sheet and split it to single lines
@@ -22,8 +20,8 @@ def split_to_lines(img, factor):
     th = 1
 
     H, W = img.shape[:2]
-    uppers = [y for y in range(1, H - 1) if hist[y] <= th and hist[y + 1] > th]  # קווים עליונים
-    lowers = [y for y in range(1, H - 1) if hist[y] > th and hist[y + 1] <= th]  # קווים תחתונים
+    uppers = [y for y in range(1, H - 1) if hist[y] <= th and hist[y + 1] > th]
+    lowers = [y for y in range(1, H - 1) if hist[y] > th and hist[y + 1] <= th]
     print('uppers:', uppers)
     print('lowers:', lowers)
     # for y in uppers:
@@ -61,17 +59,13 @@ def object_detection(lines, arg):
     """
     objList = []
     for img in lines:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # להפוך את התמונה לשחור לבן
-        _, thresh = cv2.threshold(gray, 1, 100, cv2.THRESH_BINARY_INV)  # threshold - קצוות
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        _, thresh = cv2.threshold(gray, 1, 100, cv2.THRESH_BINARY_INV)
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 2))
-        dilated = cv2.dilate(thresh, kernel, iterations=2)  # dilate
-        contours, hierarchy = cv2.findContours(dilated, cv2.RETR_EXTERNAL,
-                                               cv2.CHAIN_APPROX_NONE)  # get contours - חילוץ קווי מתאר
-        # הפרמטרים: תמונת מקור,מצב אחזור קווי המתאר,שיטת קירוב קווי המתאר
-        # מחזירה: קווי המתאר וההיררכיה
+        dilated = cv2.dilate(thresh, kernel, iterations=2)
+        contours, hierarchy = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         idx = 0
         # for each contour found, draw a rectangle around it on original image
-        # לולאה שעוברת ומסמנת כל אוביקט
         for contour in contours:
             # get rectangle bounding contour
             [x, y, w, h] = cv2.boundingRect(contour)
@@ -90,16 +84,16 @@ def object_detection(lines, arg):
             # draw rectangle around contour on original image
             # cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 1)
             obj = img[y:y + h, x:x + w]
-            # cv2.imshow('img' + str(idx) + '.jpg', obj) #הצגת כל אוביקט בנפרד
+            # cv2.imshow('img' + str(idx) + '.jpg', obj)
             objList.append(MusicObject(obj, x, y, h, w))
             # print('x ' + str(x), 'y ' + str(y))
             # cv2.imshow('out', img)
             # cv2.imwrite('Data_output/timeSig3/time3_' + str(idx) + '.jpg', obj)
             # cv2.waitKey(0)
-        cv2.imshow('out', img)  # הצגת השורה עם כל האוביקטים המסומנים
+        cv2.imshow('out', img)
         cv2.waitKey(0)
 
-    objList.sort(key=attrgetter('x'))  # מיון מערך האוביקטים לפי המיקום מימין לשמאל
+    objList.sort(key=attrgetter('x'))
 
     # for i in range(len(objList)):
     #     print(objList[i].x, objList[i].y)
@@ -120,9 +114,7 @@ def lines_detection(lines):
     for img in lines:
         # img = cv2.imread(imgUrl)
         # img = cv2.resize(image, (0,0), fx=2, fy=2)
-        height, width, channels = img.shape  # גודל התמונה
-        # blank_image = np.zeros((height, width, 3), np.uint8)  # יצירת תמונה חדשה ריקה שתכיל רק את השורות
-        # blank_image.fill(255)  # מילוי צבע לבן
+        height, width, channels = img.shape
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         Threshold1 = 150
         Threshold2 = 300
@@ -148,13 +140,13 @@ def lines_detection(lines):
         # cv2.imwrite('Output/result lines.jpg', img)
         # cv2.imwrite('Output/result lines blank.jpg', img)
 
-        # מיון לפי ערך ה y (מלמעלה ללמטה)
+        # Sort by the y-axis (from top to bottom)
         pt = sorted(pt, key=lambda k: [k[1], k[0]])
         # pt1 = sorted(pt1, key=lambda k: [k[1], k[0]])
         for p in range(len(pt)):
             if p % 2 == 0:
                 pnt.append(pt[p])
-    # מחזירה שתי רשימות של מיקומי השורות ממוינות לפי סדר ה y מלמעלה ללמטה
+
     return pnt
 
 
@@ -308,8 +300,6 @@ def note_declaration(n_list, l_list):  # type img
     return right_hand, left_hand
 
 
-# המרחק בין שורה לשורה 7 px
-
 def object_recognition(lines):  # list of images of line
     right_hand, left_hand = note_declaration(object_detection(lines, (2, 2)),
                                              lines_detection(lines))
@@ -339,45 +329,6 @@ functions = {
     19: help.sixteenth,
     20: help.eighth
 }
-from datetime import datetime
-# import multiprocessing
-#
-#
-# def my_func1(img, index, right_hand_notes):
-#     try:
-#         # now = datetime.now().time()
-#         # print("start =", now)
-#         cv2.imwrite(f'items/t{index}.jpg', img.obj)
-#         # now = datetime.now().time()
-#         # print("write =", now)
-#         resize_with_white_background(f'items/t{index}.jpg', f'items/t{index}.jpg')
-#         # now = datetime.now().time()
-#         # print("resize =", now)
-#         response = test_model(f'items/t{index}.jpg')
-#         # now = datetime.now().time()
-#         # print("model =", now)
-#         right_hand_notes[index] = response
-#     except:
-#         print("error")
-#
-#
-# def my_func2(img, index, left_hand_notes):
-#     try:
-#         # now = datetime.now().time()
-#         # print("start =", now)
-#         cv2.imwrite(f'items/t{index}.jpg', img.obj)
-#         # now = datetime.now().time()
-#         # print("write =", now)
-#         resize_with_white_background(f'items/t{index}.jpg', f'items/t{index}.jpg')
-#         # now = datetime.now().time()
-#         # print("resize =", now)
-#         response = test_model(f'items/t{index}.jpg')
-#         # now = datetime.now().time()
-#         # print("model =", now)
-#         left_hand_notes[index] = response
-#     except:
-#         print("error")
-#
 
 from keras.models import load_model
 from keras.preprocessing import image
@@ -393,47 +344,13 @@ def send_to_model(right_hand, left_hand):
     """
     right_hand_notes = []
     left_hand_notes = []
-    # tf.compat.v1.disable_eager_execution()
-    # with multiprocessing.Manager() as manager:
-    #     right_hand_notes = manager.list()
-    #     p_arr = []
-    #     for i in range(len(right_hand)):
-    #         right_hand_notes.append(-1)
-    #     for index, img in enumerate(right_hand):
-    #         p = multiprocessing.Process(target=my_func1, args=(img, index, right_hand_notes))
-    #         p_arr.append(p)
-    #     for p in p_arr:
-    #         p.start()
-    #     for p in p_arr:
-    #         p.join()
-    #
-    #     left_hand_notes = manager.list()
-    #     p1_arr = []
-    #     for i in len(left_hand):
-    #         left_hand_notes.append(-1)
-    #     for index, img in enumerate(left_hand):
-    #         p1 = multiprocessing.Process(target=my_func2, args=(img, index, left_hand_notes))
-    #         p1_arr.append(p1)
-    #     for p in p1_arr:
-    #         p.start()
-    #     for p in p1_arr:
-    #         p.join()
     index = 0
     model = load_model('model_VGG16.h5')
     for img in right_hand:
         try:
-            # now = datetime.now().time()
-            # print("start =", now)
             cv2.imwrite(f'items/t{index}.jpg', img.obj)
-            # now = datetime.now().time()
-            # print("write =", now)
             resize_with_white_background(f'items/t{index}.jpg', f'items/t{index}.jpg')
-            # now = datetime.now().time()
-            # print("resize =", now)
             response = test_model(f'items/t{index}.jpg')
-            # print(response)
-            # now = datetime.now().time()
-            # print("model =", now)
             right_hand_notes.append(response)
         except:
             print("error")
@@ -441,18 +358,9 @@ def send_to_model(right_hand, left_hand):
     index = 0
     for img in left_hand:
         try:
-            # now = datetime.now().time()
-            # print("start =", now)
             cv2.imwrite(f'items/t{index}.jpg', img.obj)
-            # now = datetime.now().time()
-            # print("write =", now)
             resize_with_white_background(f'items/t{index}.jpg', f'items/t{index}.jpg')
-            # now = datetime.now().time()
-            # print("resize =", now)
             response = test_model(f'items/t{index}.jpg')
-            # print(response)
-            # now = datetime.now().time()
-            # print("model =", now)
             left_hand_notes.append(response)
         except:
             print("error")
@@ -465,9 +373,6 @@ def send_to_model(right_hand, left_hand):
     left_res = []
     index = 0
 
-    # right_hand_notes = [18, 18, 18, 18, 18, 18, 17, 18, 18, 18, 18, 18, 18, 17, 18, 18, 18, 18, 18, 18, 17, 18, 18, 18,
-    #                     18, 18, 18, 17, 18, 18, 18, 18, 18, 18, 17, 18, 18, 18, 18, 18, 18, 17]
-    # left_hand_notes = [18] * 96
     print(len(right_hand))
     for r in range(len(right_hand_notes)):
         print(index)
@@ -570,44 +475,8 @@ def run(imgUrl):
 
     right_names = note_declaration(right_notes, lines_list)
     left_names = note_declaration(left_notes, lines_list)
-    # right_names = ['C4', 'C4', 'G4', 'G4',
-    #                'A4', 'A4', 'G4',
-    #                'F4', 'F4', 'E4', 'E4',
-    #                'D4', 'D4', 'C4',
-    #                'G4', 'G4', 'F4', 'F4',
-    #                'E4', 'E4', 'D4',
-    #                'G4', 'G4', 'F4', 'F4',
-    #                'E4', 'E4', 'D4',
-    #                'C4', 'C4', 'G4', 'G4',
-    #                'A4', 'A4', 'G4',
-    #                'F4', 'F4', 'E4', 'E4',
-    #                'D4', 'D4', 'C4', ]
-    # right_duration = [0.25, 0.25, 0.25, 0.25,
-    #                   0.25, 0.25, 0.5] * 6
-    # left_names = ['C3', 'G3', 'E3', 'G3', 'C3', 'G3', 'E3', 'G3',
-    #               'C3', 'A4', 'F4', 'A4', 'C3', 'G3', 'E3', 'G3',
-    #               'B3', 'G3', 'D3', 'G3', 'C3', 'G3', 'E3', 'G3',
-    #               'B3', 'G3', 'F3', 'G3', 'C3', 'G3', 'E3', 'G3',
-    #               'C3', 'G3', 'E3', 'G3', 'C3', 'A4', 'F3', 'A4',
-    #               'C3', 'G3', 'E3', 'G3', 'B3', 'G3', 'F3', 'G3',
-    #               'C3', 'G3', 'E3', 'G3', 'C3', 'A4', 'F3', 'A4',
-    #               'C3', 'G3', 'E3', 'G3', 'B3', 'G3', 'F3', 'G3',
-    #               'C3', 'G3', 'E3', 'G3', 'C3', 'G3', 'E3', 'G3',
-    #               'C3', 'A4', 'F4', 'A4', 'C3', 'G3', 'E3', 'G3',
-    #               'B3', 'G3', 'D3', 'G3', 'C3', 'G3', 'E3', 'G3',
-    #               'B3', 'G3', 'F3', 'G3', 'C3', 'G3', 'E3']
-    # left_duration = [1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
-    #                  1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 4]
+
+ # Thea result shuld be like this:
     rightlist = [['C4', 'C4', 'G4', 'G4',
                   'A4', 'A4', 'G4',
                   'F4', 'F4', 'E4', 'E4',
@@ -650,19 +519,7 @@ def run(imgUrl):
                           1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8,
                           1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 8, 1 / 4]]
 
-    if '1' in imgUrl:
-        print(f'  1{rightlist[2]}\n, {right_durationlist[2]}\n, {leftlist[2]}\n, {left_durationlist[2]}')
-        play_music(rightlist[2], right_durationlist[2], leftlist[2], left_durationlist[2], 1)
-    if '2' in imgUrl:
-        print(f'2{rightlist[1]}\n, {right_durationlist[1]}\n, {leftlist[1]}\n, {left_durationlist[1]}')
-        play_music(rightlist[1], right_durationlist[1], leftlist[1], left_durationlist[1], 1)
-    if '3' in imgUrl:
-        print(f'3{rightlist[2]}\n, {right_durationlist[2]}\n, {leftlist[2]}\n, {left_durationlist[2]}')
-        play_music(rightlist[2], right_durationlist[2], leftlist[2], left_durationlist[2], 1)
-    # else:
-    #     print(f'{rightlist[0]}\n, {right_durationlist[0]}\n, {leftlist[0]}\n, {left_durationlist[0]}')
-    #     # play_music(right_names, right_duration, left_names, left_duration, 1)
-    #     play_music(rightlist[0], right_durationlist[0], leftlist[0], left_durationlist[0], 1)
+
     return 'true'
 
 # run('Piano_sheets/qwe.jpg')

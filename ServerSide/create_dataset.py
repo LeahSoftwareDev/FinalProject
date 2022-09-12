@@ -3,19 +3,15 @@ import os
 from PIL import Image
 from sklearn.model_selection import train_test_split
 
-#חיתוך מתוך התמונה הכללית
+
 def create_dataset(path):
     img = cv2.imread(path)
     img = cv2.resize(img, (0,0), fx=0.4, fy=0.4)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #להפוך את התמונה לשחור לבן
-    _,thresh = cv2.threshold(gray,50,300,cv2.THRESH_BINARY_INV) # threshold - קצוות
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    _,thresh = cv2.threshold(gray,50,300,cv2.THRESH_BINARY_INV)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(1,1))
     dilated = cv2.dilate(thresh,kernel,iterations = 18) # dilate
-    contours, hierarchy = cv2.findContours(dilated,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE) # get contours - חילוץ קווי מתאר
-    #הפרמטרים: תמונת מקור,מצב אחזור קווי המתאר,שיטת קירוב קווי המתאר
-    #מחזירה: קווי המתאר וההיררכיה
-    # cv2.imshow('contours',dilated)
-    # cv2.waitKey(0)
+    contours, hierarchy = cv2.findContours(dilated,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE) # get contours
     idx =0
     c=0
     # for each contour found, draw a rectangle around it on original image
@@ -54,7 +50,7 @@ def create_dataset(path):
 # create_dataset(r"M:\what-child-is-this-for-piano-intermediate.png")
 # create_dataset('Piano_sheets/Wonderwall_LI.jpg')
 
-#עיבוי תמונה
+
 # Importing necessary functions
 # from keras.preprocessing.image import ImageDataGenerator,array_to_img, img_to_array, load_img
 
@@ -145,12 +141,11 @@ def create_model_dirs():
   createFolder('splited data/validate/single')
 
 def split_to_train_test():
-  X = []   # מערך שיכיל את כל נתיבי התמונות
+  X = []
   base_dir = 'new data'
   for i in os.listdir(base_dir):
     print(i)
     for j in os.listdir(fr'{base_dir}/{i}'):
-    # עובר על כל התיקיה וממלא את המערך בנתיבי כל התמונות
       X.append(j)
 
     # devide the images to train_validate and  test
@@ -199,37 +194,17 @@ def image_augmantion(path,p):
         if i > 6:
             break
 
-# path1=r'C:/Users/324863349/Documents/data/1'
-# for dir in os.listdir(path1):
-#     print(dir)
-#     path=path1+os.path.splitext(dir)[0]
-#     i=0
-#     for img in os.listdir(path):
-#         path_ori = path + '/' + img
-#         image_augmantion(path_ori,i,path)
-#         i += 1
-
-# for image in os.listdir('C:/Users/324863349/Documents/data/1'):
-#     if image.endswith('.jpg'):
-#         path='C:/Users/324863349/Documents/data/1/{}'.format(image)
-#         newpath='C:/Users/324863349/Documents/data/1/1/'
-#         image_augmantion(path,newpath)
-
-# הפונקציה הבאה מעבדת את התמונות לגודל של 224 על 224 עם רקע לבן,
-# ומעבירה את התמונות המעובדות לתיקייה 'resized':
 
 def resize_img(path, newpath):
-    '''שינוי גודל התמונה'''
-    # print('height ' + str(height), 'width ' + str(width))
-    # img = cv2.resize(img, (0, 0), fx=0.9, fy=0.9)  #
-    # הגדלת גודל התמונה
+    '''resizing the image'''
+
     img = cv2.imread(path)
     img=cv2.resize(img, (81, 81))
     cv2.imwrite(newpath, img)
 
 def resize_with_white_background(ori_path,dest_path):
     '''
-    function to resize the data images
+    function to resize the data images with white background
 
     :param ori_path:
     :param dest_path:
@@ -248,28 +223,3 @@ def resize_with_white_background(ori_path,dest_path):
     background.paste(img, offset)
     background.save(dest_path)
 
-# resize_with_white_background('pict/h.jpg','pict/h1.jpg')
-# resize_with_white_background(r"Data_output\Gclefs\G_claf170.jpg",r"C:\Users\324863349\Desktop\img.jpg")
-# for dir in os.listdir(r"D:/פרויקט-קוד/project code/Datasets/datasets/datasets"):
-#     print(dir)
-#     for image in os.listdir(r"D:/פרויקט-קוד/project code/Datasets/datasets/datasets/{}".format(dir)):
-#         if image.endswith('.jpg'):
-#             img = cv2.imread(r"D:/פרויקט-קוד/project code/Datasets/datasets/datasets/{}/{}".format(dir,image))
-#             resize_with_white_background(r"D:/פרויקט-קוד/project code/Datasets/datasets/datasets/{}/{}".format(dir,image), r"D:/פרויקט-קוד/project code/Datasets/datasets/datasets1/{}/{}".format(dir,image))
-
-#
-#
-# for dir in os.listdir('splited data/train'):
-#     print(dir)
-#     if dir == 'Whole' or dir == 'Half' or dir == 'Quarter':
-#         for image in os.listdir('splited data/train/{}'.format(dir)):
-#             if image.endswith('.jpg'):
-#                 path='splited data/train/{}/{}'.format(dir,image)
-#                 newpath='splited data/train/{}/{}'.format(dir,image)
-#                 resize_img(path,newpath)
-
-# for image in os.listdir(r'C:\Users\324863349\Documents\data/1'):
-#     if image.endswith('.jpg'):
-#         path=r'C:\Users\324863349\Documents\data/1/{}'.format(image)
-#         newpath=r'C:\Users\324863349\Documents\data/1/{}'.format(image)
-#         resize_with_white_background(path,newpath)

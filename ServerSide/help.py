@@ -136,7 +136,3 @@ def rest_quarter(notes,duration,i):
   notes = notes[0:i] + r + notes[i + 1:]
   duration = duration[0:i] + d + duration[i + 1:]
   return notes, duration
-
-# print(['A4','C4','E4','a4','B4','E4','g4','B4'])
-# print(left_hand(['A4','C4','E4','a4','B4','E4','g4','B4']))
-# ornament_mordent(['A4','C4','E4','A4','B4','E4','g4','B4'],[3/8, 1/8, 1/8, 1/8, 3/8, 1/8, 1/8, 1/8],2)

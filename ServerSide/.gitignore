@@ -152,12 +152,10 @@ cython_debug/
 #.idea/
 
 
-/data
-/splited data
+/Output
+/Piano_sheets
 model_VGG16.h5
-/new data
-/splited data
-*.jpg
+
 
 
 # Created by .ignore support plugin (hsz.mobi)
