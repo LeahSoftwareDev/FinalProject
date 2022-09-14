@@ -3,6 +3,11 @@ This project is about music. I noticed that it is much easier to play when you f
 
 The application will scan the sheet of music you want to play, and play the piece.
 
+for example:
+
+![detect objects](https://github.com/LeahSoftwareDev/FinalProject/blob/main/ServerSide/pict/all%20objects%20detection.jpg)
+![detect lines](https://github.com/LeahSoftwareDev/FinalProject/blob/main/ServerSide/pict/result%20lines.jpg)
+
 I faced several challenges when writing the project, such as identifying the objects in the image, as well as correctly and accurately identifying the relevant characters from the multitude of markings on the page. In addition, after identifying the notes I had to play each note correctly, according to the appropriate rhythm.
 
 The system provides the user with a convenient interface for uploading the sheet music image, when running the application scans the page, processes the data, creates an audio segment from the sheet music, the user can listen to the segment online and/or download it to the hard drive.
