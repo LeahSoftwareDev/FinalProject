@@ -3,7 +3,8 @@ This project is about music. I noticed that it is much easier to play when you f
 
 The application will scan the sheet of music you want to play, and play the piece.
 
-for example:
+For example:
+lines and objects detection using openCV:
 
 ![detect objects](https://github.com/LeahSoftwareDev/FinalProject/blob/main/ServerSide/pict/all%20objects%20detection.jpg)
 ![detect lines](https://github.com/LeahSoftwareDev/FinalProject/blob/main/ServerSide/pict/result%20lines.jpg)
